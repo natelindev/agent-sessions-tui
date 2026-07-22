@@ -7,10 +7,11 @@ minimum_go_minor=24
 
 usage() {
     cat <<'EOF'
-Build and install agent-sessions-tui from this checkout.
+Install agent-sessions-tui from a checkout or the Go module proxy.
 
 Usage:
   ./scripts/install.sh [--bin-dir PATH]
+  curl -fsSL https://raw.githubusercontent.com/natelindev/agent-sessions-tui/main/scripts/install.sh | sh
 
 Options:
   --bin-dir PATH  Installation directory (default: $XDG_BIN_HOME or ~/.local/bin)
@@ -24,7 +25,7 @@ EOF
 
 fail() {
     printf 'error: %s\n' "$1"
-    printf 'help: Run ./scripts/install.sh --help for usage.\n'
+    printf 'help: Run the installer with --help for usage.\n'
     exit 2
 }
 
@@ -70,8 +71,12 @@ if [ "$go_major" -lt 1 ] || { [ "$go_major" -eq 1 ] && [ "$go_minor" -lt "$minim
     fail "Go 1.$minimum_go_minor or newer is required; found go$go_version"
 fi
 
-script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" 2>/dev/null && pwd || true)
+repo_root=
+if [ -n "$script_dir" ] && [ -f "$script_dir/../go.mod" ] && \
+    grep -qx 'module github.com/natelindev/agent-sessions-tui' "$script_dir/../go.mod"; then
+    repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+fi
 
 mkdir -p "$bin_dir" || fail "cannot create installation directory: $bin_dir"
 bin_dir=$(CDPATH= cd -- "$bin_dir" && pwd) || fail "cannot resolve installation directory: $bin_dir"
@@ -83,11 +88,19 @@ cleanup() {
 }
 trap cleanup EXIT HUP INT TERM
 
-version=$(sed -n 's/^var version = "\([^"]*\)"$/\1/p' "$repo_root/cmd/agent-sessions-tui/main.go")
-[ -n "$version" ] || version=dev
-
-if ! (cd "$repo_root" && go build -trimpath -ldflags "-s -w -X main.version=$version" -o "$temp_binary" ./cmd/agent-sessions-tui); then
-    fail 'build failed'
+if [ -n "$repo_root" ]; then
+    version=$(sed -n 's/^var version = "\([^"]*\)"$/\1/p' "$repo_root/cmd/agent-sessions-tui/main.go")
+    [ -n "$version" ] || version=dev
+    if ! (cd "$repo_root" && go build -trimpath -ldflags "-s -w -X main.version=$version" -o "$temp_binary" ./cmd/agent-sessions-tui); then
+        fail 'build failed'
+    fi
+else
+    if ! GOBIN=$temp_dir go install github.com/natelindev/agent-sessions-tui/cmd/agent-sessions-tui@latest; then
+        fail 'download or build failed'
+    fi
+    version_output=$($temp_binary --version 2>/dev/null || true)
+    version=${version_output##* }
+    [ -n "$version" ] || version=unknown
 fi
 chmod 755 "$temp_binary"
 

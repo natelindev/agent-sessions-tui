@@ -41,6 +41,16 @@ Each provider has a distinct color, while timestamps, projects, titles, search s
 
 Go 1.24 or newer is required.
 
+Install the latest version with one command:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/natelindev/agent-sessions-tui/main/scripts/install.sh | sh
+```
+
+The script downloads the Go module, builds it, and installs the binary atomically into `$XDG_BIN_HOME` or `~/.local/bin`.
+
+Alternatively, install directly with Go:
+
 ```sh
 go install github.com/natelindev/agent-sessions-tui/cmd/agent-sessions-tui@latest
 ```
@@ -52,7 +62,7 @@ For a local checkout:
 agent-sessions-tui
 ```
 
-The installer builds from the current checkout and installs atomically into `$XDG_BIN_HOME` or `~/.local/bin`. Override the destination when needed:
+When run from a local checkout, the same installer builds the checked-out source. Override the destination when needed:
 
 ```sh
 ./scripts/install.sh --bin-dir /usr/local/bin
