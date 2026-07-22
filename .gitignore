@@ -1,0 +1,4 @@
+/bin/
+/.playwright-cli/
+*.test
+.DS_Store

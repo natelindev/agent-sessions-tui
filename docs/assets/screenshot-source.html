@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Sessions TUI</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 50% 0%, #24263b 0%, #11131c 52%, #0b0d14 100%);
+    color: #eceef4;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  .terminal {
+    width: 1260px;
+    border: 1px solid #3b4052;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #151821;
+    box-shadow: 0 28px 80px rgba(0,0,0,.48), 0 0 0 1px rgba(255,255,255,.025) inset;
+  }
+  .chrome {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 17px;
+    border-bottom: 1px solid #343a49;
+    background: #1b1e29;
+    position: relative;
+  }
+  .dots { display: flex; gap: 9px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .red { background:#ff5f57; } .yellow { background:#febc2e; } .green { background:#28c840; }
+  .window-title { position:absolute; inset:0; display:grid; place-items:center; color:#9ca3b7; font-size:13px; }
+  .screen { padding: 22px 26px 20px; font-size: 15px; line-height: 1.62; }
+  .top { display:flex; justify-content:space-between; margin-bottom:9px; }
+  .app-title { font-weight:800; color:#f2f3f7; }
+  .count, .muted { color:#8b93a7; }
+  .search {
+    height: 44px;
+    border: 1px solid #a79cff;
+    border-radius: 8px;
+    display:flex;
+    align-items:center;
+    padding:0 14px;
+    margin-bottom:7px;
+  }
+  .search-label { color:#a79cff; font-weight:800; }
+  .cursor { color:#a79cff; animation:none; }
+  .status { color:#8b93a7; margin:2px 0 4px; }
+  .grid { display:grid; grid-template-columns: 148px 120px 230px 1fr; align-items:center; }
+  .header { color:#8b93a7; font-weight:800; height:27px; }
+  .row { min-height:31px; padding:2px 5px; margin:0 -5px; border-radius:3px; }
+  .row.selected { background:#302b4f; }
+  .agent { font-weight:800; }
+  .age { color:#8b93a7; }
+  .project { color:#7db9de; }
+  .codex { color:#55c2ff; }
+  .claude { color:#ff9b62; }
+  .antigravity { color:#c09cff; }
+  .opencode { color:#55d6c9; }
+  .hermes { color:#b69cff; }
+  .copilot { color:#ff8cc8; }
+  .cursor-provider { color:#79a8ff; }
+  .pi { color:#75d68f; }
+  .detail { margin-top:5px; white-space:nowrap; overflow:hidden; color:#8b93a7; }
+  .detail .command { color:#a79cff; font-weight:800; }
+  .footer { border-top:1px solid #343a49; margin:6px -26px -20px; padding:8px 26px 10px; color:#8b93a7; }
+  .demo { color:#676f83; font-size:12px; margin-left:10px; }
+</style>
+</head>
+<body>
+  <main class="terminal" aria-label="Agent Sessions TUI screenshot with demo data">
+    <div class="chrome">
+      <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+      <div class="window-title">agent-sessions-tui</div>
+    </div>
+    <section class="screen">
+      <div class="top"><span class="app-title">Agent Sessions <span class="demo">demo data</span></span><span class="count">1,248 sessions</span></div>
+      <div class="search"><span class="search-label">Search&nbsp;&nbsp;</span><span class="cursor">|</span><span class="muted">&nbsp;Type to filter by title, project, ID, model, or transcript</span></div>
+      <div class="status">Showing 1,248 of 1,248</div>
+      <div class="grid header"><span>AGENT</span><span>UPDATED</span><span>PROJECT</span><span>SESSION</span></div>
+      <div class="grid row selected"><span class="agent codex">Codex</span><span class="age">now</span><span class="project">agent-sessions-tui</span><span>Add keyboard and mouse navigation to the session browser</span></div>
+      <div class="grid row"><span class="agent claude">Claude</span><span class="age">4m ago</span><span class="project">design-system</span><span>Review the component tokens and simplify the theme API</span></div>
+      <div class="grid row"><span class="agent antigravity">Antigravity</span><span class="age">18m ago</span><span class="project">web-console</span><span>Polish the admin dashboard and verify the responsive layout</span></div>
+      <div class="grid row"><span class="agent opencode">OpenCode</span><span class="age">31m ago</span><span class="project">api-gateway</span><span>Trace the request lifecycle and improve retry handling</span></div>
+      <div class="grid row"><span class="agent hermes">Hermes</span><span class="age">1h ago</span><span class="project">docs-site</span><span>Restructure the getting-started guide for new contributors</span></div>
+      <div class="grid row"><span class="agent copilot">Copilot</span><span class="age">2h ago</span><span class="project">cli-tools</span><span>Add completion tests for the install command</span></div>
+      <div class="grid row"><span class="agent cursor-provider">Cursor</span><span class="age">3h ago</span><span class="project">desktop-client</span><span>Fix the stale connection indicator in the sidebar</span></div>
+      <div class="grid row"><span class="agent pi">Pi</span><span class="age">5h ago</span><span class="project">search-index</span><span>Benchmark incremental indexing across large histories</span></div>
+      <div class="grid row"><span class="agent codex">Codex</span><span class="age">yesterday</span><span class="project">release-tools</span><span>Prepare the changelog and validate the release artifact</span></div>
+      <div class="grid row"><span class="agent claude">Claude</span><span class="age">yesterday</span><span class="project">mobile-app</span><span>Investigate offline synchronization conflicts</span></div>
+      <div class="detail"><span class="agent codex">Codex</span>&nbsp; - &nbsp;019f87ba-4076-70b3-ac09-...&nbsp; - &nbsp;gpt-5.6&nbsp; - &nbsp;<span class="command">codex resume 019f87ba-4076-70b3-ac09-demo</span></div>
+      <div class="footer">↑/↓ or j/k navigate&nbsp;&nbsp;&nbsp; / search&nbsp;&nbsp;&nbsp; Enter resume&nbsp;&nbsp;&nbsp; r refresh&nbsp;&nbsp;&nbsp; q quit</div>
+    </section>
+  </main>
+</body>
+</html>
