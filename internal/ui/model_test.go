@@ -42,6 +42,21 @@ func TestMouseSelectsVisibleRow(t *testing.T) {
 	}
 }
 
+func TestMouseWheelNavigatesWhileSearchIsFocused(t *testing.T) {
+	m := testModel()
+	m.focused = true
+
+	updated, _ := m.Update(tea.MouseMsg{Button: tea.MouseButtonWheelDown})
+	m = updated.(Model)
+
+	if m.focused {
+		t.Fatal("mouse wheel left search focused")
+	}
+	if m.selected != 1 {
+		t.Fatalf("selected = %d, want 1", m.selected)
+	}
+}
+
 func TestViewFitsWindowHeight(t *testing.T) {
 	m := testModel()
 	view := m.View()

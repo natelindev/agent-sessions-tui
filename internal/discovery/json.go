@@ -15,7 +15,7 @@ import (
 	"github.com/natelindev/agent-sessions-tui/internal/session"
 )
 
-const maxIndexedText = 512 * 1024
+const maxIndexedTermBytes = 4096
 
 var (
 	whitespace     = regexp.MustCompile(`\s+`)
@@ -25,22 +25,28 @@ var (
 
 type textIndex struct {
 	builder strings.Builder
+	seen    map[string]struct{}
 }
 
 func (t *textIndex) add(value string) {
-	if t.builder.Len() >= maxIndexedText {
-		return
-	}
 	value = strings.TrimSpace(value)
 	if value == "" {
 		return
 	}
-	remaining := maxIndexedText - t.builder.Len()
-	if len(value) > remaining {
-		value = value[:remaining]
+	if t.seen == nil {
+		t.seen = make(map[string]struct{})
 	}
-	t.builder.WriteByte(' ')
-	t.builder.WriteString(strings.ToLower(value))
+	for _, term := range strings.Fields(strings.ToLower(value)) {
+		if len(term) > maxIndexedTermBytes {
+			continue
+		}
+		if _, exists := t.seen[term]; exists {
+			continue
+		}
+		t.seen[term] = struct{}{}
+		t.builder.WriteByte(' ')
+		t.builder.WriteString(term)
+	}
 }
 
 func (t *textIndex) String() string { return t.builder.String() }
@@ -68,19 +74,18 @@ func parseJSONSession(candidate fileCandidate) (session.Session, bool) {
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(io.LimitReader(file, maxIndexedText*2))
-	scanner.Buffer(make([]byte, 64*1024), 4*1024*1024)
-	lineCount := 0
-	for scanner.Scan() {
-		lineCount++
-		if lineCount > 3000 || index.builder.Len() >= maxIndexedText {
+	reader := bufio.NewReaderSize(file, 64*1024)
+	for {
+		line, readErr := reader.ReadBytes('\n')
+		var value any
+		if len(line) > 0 {
+			if err := json.Unmarshal(line, &value); err == nil {
+				consumeJSON(value, &item, index)
+			}
+		}
+		if readErr != nil {
 			break
 		}
-		var value any
-		if err := json.Unmarshal(scanner.Bytes(), &value); err != nil {
-			continue
-		}
-		consumeJSON(value, &item, index)
 	}
 	if item.Provider == session.Antigravity && item.CWD == "" {
 		if artifactDirectory := antigravityArtifactProjectDirectory(candidate.path); shouldPreferProjectDirectory(artifactDirectory, item.CWD) {

@@ -24,6 +24,12 @@
 - Publish the MIT-licensed source under the owner's personal GitHub account.
 - Add continuous verification for tests, static analysis, and builds.
 
+## Stage 5 - Complete transcript search and fluid result navigation
+
+- Index searchable messages throughout complete file-backed transcripts while deduplicating repeated terms.
+- Let mouse-wheel navigation transition directly from search editing to result browsing.
+- Add regressions for late transcript matches and focused-search wheel navigation.
+
 ## Agent progress
 
 - [x] Audited the source app's supported providers, storage locations, and resume rules.
@@ -32,3 +38,4 @@
 - [x] Completed automated and interactive verification.
 - [x] Added provider colors and the local installation workflow.
 - [x] Prepared the public repository, demo screenshot, attribution, license, and CI workflow.
+- [x] Verified complete transcript search and direct wheel navigation from the search field.

@@ -184,8 +184,10 @@ func (m Model) handleKey(key tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m Model) handleMouse(mouse tea.MouseEvent) (tea.Model, tea.Cmd) {
 	switch mouse.Button {
 	case tea.MouseButtonWheelUp:
+		m.focused = false
 		m.move(-3)
 	case tea.MouseButtonWheelDown:
+		m.focused = false
 		m.move(3)
 	case tea.MouseButtonLeft:
 		if mouse.Action != tea.MouseActionPress {

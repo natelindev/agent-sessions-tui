@@ -40,6 +40,27 @@ func TestParseJSONSessionFindsMetadataTitleAndSearchContent(t *testing.T) {
 	}
 }
 
+func TestParseJSONSessionIndexesMessagesAfterLargeEarlierContent(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "rollout-2026-07-27T10-00-00-019f0000-1111-7222-8333-555555555555.jsonl")
+	content := strings.Join([]string{
+		`{"type":"session_meta","payload":{"id":"019f0000-1111-7222-8333-555555555555","cwd":"/work/acme"}}`,
+		`{"type":"response_item","payload":{"role":"assistant","content":[{"text":"` + strings.Repeat("repeated-filler ", 80000) + `"}]}}`,
+		`{"type":"response_item","payload":{"role":"user","content":[{"text":"很好，现在把一赞文化的7月账单发给我看看"}]}}`,
+	}, "\n")
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	got, ok := parseJSONSession(fileCandidate{provider: session.Codex, path: path})
+	if !ok {
+		t.Fatal("parseJSONSession() rejected a valid session")
+	}
+	if !strings.Contains(got.SearchText, "一赞文化") {
+		t.Fatalf("SearchText does not include content after a large earlier message: %q", got.SearchText)
+	}
+}
+
 func TestFallbackIDForAntigravityConversation(t *testing.T) {
 	path := "/home/test/.gemini/antigravity/brain/conversation-id/.system_generated/logs/transcript.jsonl"
 	got := fallbackID(fileCandidate{provider: session.Antigravity, path: path})

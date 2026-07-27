@@ -80,7 +80,7 @@ When run from a local checkout, the same installer builds the checked-out source
 | Refresh | `r` | - |
 | Quit | `q` or Ctrl+C | - |
 
-Search is case-insensitive and updates on every keystroke. Space-separated terms use AND matching across provider, session ID, title, project, working directory, model, path, and indexed transcript text. To keep memory and startup bounded, file-backed sessions index up to 512 KiB of normalized text per session. OpenCode and Hermes database rows use their session metadata.
+Search is case-insensitive and updates on every keystroke. Space-separated terms use AND matching across provider, session ID, title, project, working directory, model, path, and indexed transcript text. File-backed sessions scan the complete transcript and deduplicate normalized search terms, so later messages remain searchable without retaining repeated text. OpenCode and Hermes database rows use their session metadata.
 
 ## Design
 
