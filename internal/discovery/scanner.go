@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/natelindev/agent-sessions-tui/internal/resume"
 	"github.com/natelindev/agent-sessions-tui/internal/session"
 )
 
@@ -21,7 +22,8 @@ type Result struct {
 }
 
 type Scanner struct {
-	Home string
+	Home      string
+	CachePath string
 }
 
 type fileCandidate struct {
@@ -29,13 +31,62 @@ type fileCandidate struct {
 	path     string
 }
 
-func New(home string) *Scanner { return &Scanner{Home: home} }
+func New(home string) *Scanner {
+	return &Scanner{Home: home, CachePath: defaultCachePath(home)}
+}
+
+// Cached returns the last normalized file-backed index plus current database-backed
+// sessions. Callers can render this snapshot while Scan validates the file cache.
+func (s *Scanner) Cached() (Result, bool) {
+	cacheDB, err := openFileSessionCache(s.CachePath)
+	if err != nil {
+		return Result{Warnings: []string{"Cache: " + err.Error()}}, false
+	}
+	if cacheDB == nil {
+		return Result{}, false
+	}
+	defer cacheDB.Close()
+	entries, err := loadCachedFiles(cacheDB)
+	if err != nil {
+		return Result{Warnings: []string{"Cache: " + err.Error()}}, false
+	}
+
+	result := Result{Sessions: make([]session.Session, 0, len(entries)+128)}
+	for _, entry := range entries {
+		if !entry.valid {
+			continue
+		}
+		entry.session.Resume = resume.For(entry.session.Provider, entry.session.ID, entry.session.Path)
+		result.Sessions = append(result.Sessions, entry.session)
+	}
+	if len(result.Sessions) == 0 {
+		return Result{}, false
+	}
+	s.scanDatabases(&result)
+	result.Sessions = dedupe(result.Sessions)
+	session.SortNewest(result.Sessions)
+	sort.Strings(result.Warnings)
+	return result, true
+}
 
 func (s *Scanner) Scan(ctx context.Context) Result {
+	result := Result{}
+	cacheDB, cacheErr := openFileSessionCache(s.CachePath)
+	if cacheDB != nil {
+		defer cacheDB.Close()
+	}
+	cached := make(map[string]cachedFile)
+	if cacheErr == nil {
+		cached, cacheErr = loadCachedFiles(cacheDB)
+	}
+	if cacheErr != nil {
+		result.Warnings = append(result.Warnings, "Cache: "+cacheErr.Error())
+	}
+
 	candidates := s.discoverFiles()
 	workers := min(max(runtime.NumCPU(), 4), 16)
 	jobs := make(chan fileCandidate)
-	items := make(chan session.Session)
+	items := make(chan cachedFile)
 
 	var wg sync.WaitGroup
 	for range workers {
@@ -46,8 +97,32 @@ func (s *Scanner) Scan(ctx context.Context) Result {
 				if ctx.Err() != nil {
 					return
 				}
-				if item, ok := parseJSONSession(candidate); ok {
-					items <- item
+				info, err := os.Stat(candidate.path)
+				if err != nil || !info.Mode().IsRegular() {
+					continue
+				}
+				key := cacheKey(candidate.provider, candidate.path)
+				entry, hit := cached[key]
+				if hit && entry.valid && entry.size == info.Size() && entry.modTimeNano == info.ModTime().UnixNano() {
+					entry.session.Resume = resume.For(entry.session.Provider, entry.session.ID, entry.session.Path)
+				} else {
+					item, ok := parseJSONSession(candidate)
+					if !ok {
+						continue
+					}
+					entry = cachedFile{
+						provider:    candidate.provider,
+						path:        candidate.path,
+						size:        info.Size(),
+						modTimeNano: info.ModTime().UnixNano(),
+						session:     item,
+						valid:       true,
+					}
+				}
+				select {
+				case items <- entry:
+				case <-ctx.Done():
+					return
 				}
 			}
 		}()
@@ -67,28 +142,45 @@ func (s *Scanner) Scan(ctx context.Context) Result {
 		close(items)
 	}()
 
-	result := Result{Sessions: make([]session.Session, 0, len(candidates)+128)}
-	for item := range items {
-		result.Sessions = append(result.Sessions, item)
+	result.Sessions = make([]session.Session, 0, len(candidates)+128)
+	current := make(map[string]cachedFile, len(candidates))
+	changed := make([]cachedFile, 0)
+	for entry := range items {
+		key := cacheKey(entry.provider, entry.path)
+		current[key] = entry
+		result.Sessions = append(result.Sessions, entry.session)
+		previous, exists := cached[key]
+		if !exists || !previous.valid || previous.size != entry.size || previous.modTimeNano != entry.modTimeNano {
+			changed = append(changed, entry)
+		}
+	}
+	if ctx.Err() == nil && cacheErr == nil {
+		if err := updateCachedFiles(cacheDB, cached, current, changed); err != nil {
+			result.Warnings = append(result.Warnings, "Cache: "+err.Error())
+		}
 	}
 
 	if ctx.Err() == nil {
-		if rows, err := scanOpenCodeDB(filepath.Join(s.Home, ".local/share/opencode/opencode.db")); err == nil {
-			result.Sessions = append(result.Sessions, rows...)
-		} else if !errors.Is(err, os.ErrNotExist) {
-			result.Warnings = append(result.Warnings, "OpenCode: "+err.Error())
-		}
-		if rows, err := scanHermesDB(filepath.Join(s.Home, ".hermes/state.db")); err == nil {
-			result.Sessions = append(result.Sessions, rows...)
-		} else if !errors.Is(err, os.ErrNotExist) {
-			result.Warnings = append(result.Warnings, "Hermes: "+err.Error())
-		}
+		s.scanDatabases(&result)
 	}
 
 	result.Sessions = dedupe(result.Sessions)
 	session.SortNewest(result.Sessions)
 	sort.Strings(result.Warnings)
 	return result
+}
+
+func (s *Scanner) scanDatabases(result *Result) {
+	if rows, err := scanOpenCodeDB(filepath.Join(s.Home, ".local/share/opencode/opencode.db")); err == nil {
+		result.Sessions = append(result.Sessions, rows...)
+	} else if !errors.Is(err, os.ErrNotExist) {
+		result.Warnings = append(result.Warnings, "OpenCode: "+err.Error())
+	}
+	if rows, err := scanHermesDB(filepath.Join(s.Home, ".hermes/state.db")); err == nil {
+		result.Sessions = append(result.Sessions, rows...)
+	} else if !errors.Is(err, os.ErrNotExist) {
+		result.Warnings = append(result.Warnings, "Hermes: "+err.Error())
+	}
 }
 
 func (s *Scanner) discoverFiles() []fileCandidate {

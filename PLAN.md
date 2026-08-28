@@ -30,6 +30,14 @@
 - Let mouse-wheel navigation transition directly from search editing to result browsing.
 - Add regressions for late transcript matches and focused-search wheel navigation.
 
+## Stage 6 - Incremental startup and complete search input
+
+- Cache normalized file-backed session indexes in an app-owned SQLite database.
+- Render the cached snapshot immediately while validating source files in the background.
+- Reparse only new or changed transcripts and remove cache entries for deleted sessions.
+- Accept dedicated terminal space-key events so multi-term searches work consistently.
+- Verify cache hits, invalidation, removal, and multi-term input with regression tests.
+
 ## Agent progress
 
 - [x] Audited the source app's supported providers, storage locations, and resume rules.
@@ -39,3 +47,4 @@
 - [x] Added provider colors and the local installation workflow.
 - [x] Prepared the public repository, demo screenshot, attribution, license, and CI workflow.
 - [x] Verified complete transcript search and direct wheel navigation from the search field.
+- [x] Added incremental session caching and reliable space-separated search input.

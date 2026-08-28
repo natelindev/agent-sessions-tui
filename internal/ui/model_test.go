@@ -32,6 +32,45 @@ func TestTypingFiltersImmediately(t *testing.T) {
 	}
 }
 
+func TestTypingSpaceSeparatesSearchTerms(t *testing.T) {
+	m := testModel()
+	m.focused = true
+
+	for _, key := range []tea.KeyMsg{
+		{Type: tea.KeyRunes, Runes: []rune("payment")},
+		{Type: tea.KeySpace, Runes: []rune{' '}},
+		{Type: tea.KeyRunes, Runes: []rune("retry")},
+	} {
+		updated, _ := m.Update(key)
+		m = updated.(Model)
+	}
+
+	if m.query != "payment retry" || len(m.filtered) != 1 || m.filtered[0].ID != "one" {
+		t.Fatalf("filtered state = query %q, sessions %#v", m.query, m.filtered)
+	}
+}
+
+func TestCachedSnapshotRendersWhileSourceValidationContinues(t *testing.T) {
+	m := New(discovery.New("/nonexistent"))
+	m.width = 90
+	m.height = 24
+
+	updated, cmd := m.Update(cachedScanMsg{
+		ok: true,
+		result: discovery.Result{Sessions: []session.Session{
+			{ID: "cached", Provider: session.Codex, Title: "Cached session"},
+		}},
+	})
+	m = updated.(Model)
+
+	if len(m.all) != 1 || len(m.filtered) != 1 || m.filtered[0].ID != "cached" {
+		t.Fatalf("cached snapshot was not rendered: %#v", m.filtered)
+	}
+	if !m.loading || cmd == nil {
+		t.Fatalf("source validation state = loading %t, cmd nil %t", m.loading, cmd == nil)
+	}
+}
+
 func TestMouseSelectsVisibleRow(t *testing.T) {
 	m := testModel()
 	mouse := tea.MouseMsg{X: 2, Y: m.listTop() + 1, Button: tea.MouseButtonLeft, Action: tea.MouseActionPress}

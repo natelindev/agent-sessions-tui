@@ -16,6 +16,10 @@ import (
 )
 
 type scanMsg discovery.Result
+type cachedScanMsg struct {
+	result discovery.Result
+	ok     bool
+}
 type scanErrMsg struct{ err error }
 type resumeDoneMsg struct{ err error }
 type cursorTickMsg struct{}
@@ -54,7 +58,14 @@ func New(scanner *discovery.Scanner) Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(m.scanCmd(), cursorTick(), tea.SetWindowTitle("Agent Sessions"))
+	return tea.Batch(m.cachedScanCmd(), cursorTick(), tea.SetWindowTitle("Agent Sessions"))
+}
+
+func (m Model) cachedScanCmd() tea.Cmd {
+	return func() tea.Msg {
+		result, ok := m.scanner.Cached()
+		return cachedScanMsg{result: result, ok: ok}
+	}
 }
 
 func (m Model) scanCmd() tea.Cmd {
@@ -75,6 +86,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = typed.Height
 		m.ensureVisible()
 		return m, nil
+	case cachedScanMsg:
+		if typed.ok {
+			selectedID := m.selectedID()
+			m.all = typed.result.Sessions
+			m.warnings = typed.result.Warnings
+			m.applyFilter(selectedID)
+		}
+		return m, m.scanCmd()
 	case scanMsg:
 		selectedID := m.selectedID()
 		result := discovery.Result(typed)
@@ -137,7 +156,7 @@ func (m Model) handleKey(key tea.KeyMsg) (tea.Model, tea.Cmd) {
 			m.applyFilter("")
 			return m, nil
 		}
-		if key.Type == tea.KeyRunes && !key.Alt {
+		if (key.Type == tea.KeyRunes || key.Type == tea.KeySpace) && !key.Alt {
 			m.query += string(key.Runes)
 			m.applyFilter("")
 		}

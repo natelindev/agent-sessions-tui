@@ -14,7 +14,7 @@ It is intentionally limited to three jobs:
 - Search and navigate them quickly with a keyboard or mouse.
 - Resume supported sessions without copying IDs or commands by hand.
 
-Session data stays local and provider stores are opened read-only.
+Session data stays local and provider stores are opened read-only. To keep later launches fast, the app stores a private incremental search cache in the operating system's user cache directory. Later launches render that snapshot first, then validate it in the background. Unchanged transcripts are reused based on their path, size, and modification time; changed and removed files are updated automatically.
 
 ## Supported tools
 
@@ -86,7 +86,7 @@ Search is case-insensitive and updates on every keystroke. Space-separated terms
 
 The implementation has four small layers:
 
-- `internal/discovery` locates provider stores and extracts lightweight session records concurrently.
+- `internal/discovery` locates provider stores, incrementally caches file-backed search indexes, and extracts lightweight session records concurrently.
 - `internal/session` owns the normalized model, sorting, and in-memory search.
 - `internal/resume` maps supported providers to argument-safe `exec.Cmd` values.
 - `internal/ui` owns the responsive Bubble Tea interface and input handling.
