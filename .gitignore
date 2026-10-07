@@ -2,3 +2,6 @@
 /.playwright-cli/
 *.test
 .DS_Store
+
+# Cloudflare local state
+.wrangler/

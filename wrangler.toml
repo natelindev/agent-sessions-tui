@@ -1,0 +1,4 @@
+name = "natelindev-agent-sessions-tui"
+account_id = "03ceea7ffa07af3f2b87471413fe6b18"
+pages_build_output_dir = "./docs"
+compatibility_date = "2026-10-07"

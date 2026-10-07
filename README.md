@@ -1,12 +1,17 @@
-# agent-sessions-tui
+<p align="center"><img src="docs/assets/brand/wordmark.png" width="420" alt="Agent Sessions"></p>
+
+<p align="center">Your coding sessions, back within reach.</p>
+
+[![CI](https://github.com/natelindev/agent-sessions-tui/actions/workflows/ci.yml/badge.svg)](https://github.com/natelindev/agent-sessions-tui/actions/workflows/ci.yml)
+[Documentation](https://natelindev-agent-sessions-tui.pages.dev/) · [Contributing](CONTRIBUTING.md) · [Report a bug](https://github.com/natelindev/agent-sessions-tui/issues/new/choose)
 
 `agent-sessions-tui` is a focused terminal browser for local coding-agent sessions. It discovers histories from supported tools, keeps filtering immediate, and resumes the selected CLI session in the current terminal.
 
 <p align="center">
-  <img src="docs/assets/agent-sessions-tui.png" alt="agent-sessions-tui browsing local coding-agent sessions" width="100%">
+  <img src="docs/assets/screenshot.png" alt="agent-sessions-tui browsing local coding-agent sessions" width="100%">
 </p>
 
-<p align="center"><em>Demo data is used in the screenshot.</em></p>
+<p align="center"><em>Actual PTY output using generated session fixtures; no personal histories are shown.</em></p>
 
 It is intentionally limited to three jobs:
 
@@ -14,7 +19,7 @@ It is intentionally limited to three jobs:
 - Search and navigate them quickly with a keyboard or mouse.
 - Resume supported sessions without copying IDs or commands by hand.
 
-Session data stays local and provider stores are opened read-only. To keep later launches fast, the app stores a private incremental search cache in the operating system's user cache directory. Later launches render that snapshot first, then validate it in the background. Unchanged transcripts are reused based on their path, size, and modification time; changed and removed files are updated automatically.
+Session data stays local and provider stores are opened read-only. To keep later launches fast, the app stores a private incremental search cache in the operating system's user cache directory. The cache contains metadata and searchable transcript terms; treat it as private. Later launches render that snapshot first, then validate it in the background. Unchanged transcripts are reused based on their path, size, and modification time; changed and removed files are updated automatically.
 
 ## Supported tools
 
@@ -41,15 +46,7 @@ Each provider has a distinct color, while timestamps, projects, titles, search s
 
 Go 1.24 or newer is required.
 
-Install the latest version with one command:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/natelindev/agent-sessions-tui/main/scripts/install.sh | sh
-```
-
-The script downloads the Go module, builds it, and installs the binary atomically into `$XDG_BIN_HOME` or `~/.local/bin`.
-
-Alternatively, install directly with Go:
+Install directly with Go:
 
 ```sh
 go install github.com/natelindev/agent-sessions-tui/cmd/agent-sessions-tui@latest
@@ -62,11 +59,21 @@ For a local checkout:
 agent-sessions-tui
 ```
 
-When run from a local checkout, the same installer builds the checked-out source. Override the destination when needed:
+The checkout installer builds the source and installs atomically into `$XDG_BIN_HOME` or `~/.local/bin`. Override the destination when needed:
 
 ```sh
 ./scripts/install.sh --bin-dir /usr/local/bin
 ```
+
+## Command line
+
+```sh
+agent-sessions-tui --home /path/to/example-home
+agent-sessions-tui --version
+agent-sessions-tui --help
+```
+
+`--home` selects the home containing provider stores. The default is your OS home directory. Provider CLIs must be installed and authenticated separately to resume work.
 
 ## Controls
 
@@ -108,6 +115,10 @@ go build -trimpath -o ./bin/agent-sessions-tui ./cmd/agent-sessions-tui
 ```
 
 The project uses Bubble Tea and Lip Gloss for terminal rendering and the pure-Go `modernc.org/sqlite` driver for read-only OpenCode and Hermes access.
+
+## Documentation
+
+The [documentation site](https://natelindev-agent-sessions-tui.pages.dev/) covers provider stores, controls, search semantics, cache locations, resume behavior, and troubleshooting. It is a static site in `docs/`, hosted on Cloudflare Pages. [Publishing instructions](CONTRIBUTING.md#documentation-site) and [brand assets](docs/assets/brand/README.md) are included.
 
 ## License
 
