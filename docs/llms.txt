@@ -1,0 +1,52 @@
+# Agent Sessions (agent-sessions-tui)
+
+> One terminal view across ten coding agents. Discover, search, and resume local AI coding sessions.
+
+## Overview
+
+Agent Sessions is a focused terminal UI built with Go and Bubble Tea that normalizes local conversation histories from 10 different AI coding agents into a single interactive list.
+
+- **Website**: https://agent-sessions-tui.pages.dev/
+- **Repository**: https://github.com/natelindev/agent-sessions-tui
+- **License**: MIT
+- **Requirements**: Go 1.24+ (or precompiled binary)
+
+## Installation
+
+```bash
+# Via Go
+go install github.com/natelindev/agent-sessions-tui/cmd/agent-sessions-tui@latest
+
+# From source
+git clone https://github.com/natelindev/agent-sessions-tui.git
+cd agent-sessions-tui
+./scripts/install.sh
+```
+
+## Supported Agent Providers
+
+1. **Codex**: Reads `~/.codex/sessions` and `archived_sessions`. Resumes via `codex resume <id>`.
+2. **Claude Code**: Reads `~/.claude*/projects` and local transcripts. Resumes via `claude --resume <id>`.
+3. **Google Antigravity**: Reads `~/.gemini/antigravity*/brain`. Resumes via `agy --conversation <id>`.
+4. **OpenCode**: Reads `~/.local/share/opencode/opencode.db` and legacy JSON. Resumes via `opencode --session <id>`.
+5. **Hermes**: Reads `~/.hermes/state.db` and sessions. Resumes via `hermes --resume <id>`.
+6. **Copilot CLI**: Reads `~/.copilot/session-state`. Resumes via `copilot --resume=<id>`.
+7. **Droid**: Reads `~/.factory/sessions` and projects (Discovery only).
+8. **OpenClaw**: Reads `~/.openclaw/agents` (Discovery only).
+9. **Cursor Agent**: Reads `~/.cursor/projects/*/agent-transcripts`. Resumes via `cursor agent --resume <id>`.
+10. **Pi**: Reads `~/.pi/agent/sessions`. Resumes via `pi --session <path-or-id>`.
+
+## Controls & Usage
+
+- **Move / Navigate**: Arrow keys, `j` / `k`, `Page Up` / `Page Down`.
+- **Search**: Press `/` and type. Case-insensitive AND search across provider, ID, title, project, working directory, model, and full transcript terms.
+- **Resume**: Press `Enter` or double-click to hand the terminal to the selected provider CLI.
+- **Refresh**: Press `r` to rescan local stores.
+- **Quit**: Press `q` or `Ctrl+C`.
+
+## Command Line Flags
+
+- `--home PATH`: Read provider stores from a custom home directory.
+- `--version`: Print application version.
+- `--help`: Display CLI usage and keybindings.
+- `NO_COLOR=1`: Disable ANSI colors for accessible or plain terminal output.
