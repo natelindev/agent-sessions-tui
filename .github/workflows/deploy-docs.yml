@@ -20,4 +20,4 @@ jobs:
             echo 'Configure CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets; see CONTRIBUTING.md.' >&2
             exit 1
           fi
-          npx --yes wrangler@4.148.0 pages deploy docs --project-name natelindev-agent-sessions-tui --branch main
+          npx --yes wrangler@4.148.0 pages deploy docs --project-name agent-sessions-tui --branch main

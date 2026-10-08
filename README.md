@@ -8,7 +8,7 @@
 <p align="center">Your coding sessions, back within reach.</p>
 
 [![CI](https://github.com/natelindev/agent-sessions-tui/actions/workflows/ci.yml/badge.svg)](https://github.com/natelindev/agent-sessions-tui/actions/workflows/ci.yml)
-[Documentation](https://natelindev-agent-sessions-tui.pages.dev/) · [Contributing](CONTRIBUTING.md) · [Report a bug](https://github.com/natelindev/agent-sessions-tui/issues/new/choose)
+[Documentation](https://agent-sessions-tui.pages.dev/) · [Contributing](CONTRIBUTING.md) · [Report a bug](https://github.com/natelindev/agent-sessions-tui/issues/new/choose)
 
 `agent-sessions-tui` is a focused terminal browser for local coding-agent sessions. It discovers histories from supported tools, keeps filtering immediate, and resumes the selected CLI session in the current terminal.
 
@@ -123,7 +123,7 @@ The project uses Bubble Tea and Lip Gloss for terminal rendering and the pure-Go
 
 ## Documentation
 
-The [documentation site](https://natelindev-agent-sessions-tui.pages.dev/) covers provider stores, controls, search semantics, cache locations, resume behavior, and troubleshooting. It is a static site in `docs/`, hosted on Cloudflare Pages. [Publishing instructions](CONTRIBUTING.md#documentation-site) and [brand assets](docs/assets/brand/README.md) are included.
+The [documentation site](https://agent-sessions-tui.pages.dev/) covers provider stores, controls, search semantics, cache locations, resume behavior, and troubleshooting. It is a static site in `docs/`, hosted on Cloudflare Pages. [Publishing instructions](CONTRIBUTING.md#documentation-site) and [brand assets](docs/assets/brand/README.md) are included.
 
 ## License
 
