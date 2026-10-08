@@ -1,1 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Agent Sessions"><path fill="#443978" fill-rule="evenodd" d="M10 8H54V18H19V26H44L54 36V56H10V46H45V38H20L10 28ZM27 20 36 26 27 32Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Agent Sessions">
+  <!-- Top inactive terminal window -->
+  <rect x="7" y="6" width="50" height="13" rx="4" stroke="#5B4FDB" stroke-opacity="0.32" stroke-width="2"/>
+  <line x1="7" y1="10.5" x2="57" y2="10.5" stroke="#5B4FDB" stroke-opacity="0.2" stroke-width="1.2"/>
+  <circle cx="12" cy="8.5" r="1.1" fill="#5B4FDB" fill-opacity="0.45"/>
+  <circle cx="15.5" cy="8.5" r="1.1" fill="#5B4FDB" fill-opacity="0.45"/>
+  <circle cx="19" cy="8.5" r="1.1" fill="#5B4FDB" fill-opacity="0.45"/>
+
+  <!-- Middle active terminal window -->
+  <rect x="5" y="23" width="54" height="18" rx="4.5" fill="#5B4FDB"/>
+  <line x1="5" y1="28.5" x2="59" y2="28.5" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="1.2"/>
+  <circle cx="11" cy="26" r="1.1" fill="#FFFFFF" fill-opacity="0.85"/>
+  <circle cx="14.5" cy="26" r="1.1" fill="#FFFFFF" fill-opacity="0.55"/>
+  <circle cx="18" cy="26" r="1.1" fill="#FFFFFF" fill-opacity="0.35"/>
+  <!-- Centered prompt >_ -->
+  <path d="M12 31.5L16.5 34.5L12 37.5" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="20.5" y1="37.5" x2="27" y2="37.5" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Bottom inactive terminal window -->
+  <rect x="7" y="45" width="50" height="13" rx="4" stroke="#5B4FDB" stroke-opacity="0.32" stroke-width="2"/>
+  <line x1="7" y1="49.5" x2="57" y2="49.5" stroke="#5B4FDB" stroke-opacity="0.2" stroke-width="1.2"/>
+  <circle cx="12" cy="47.5" r="1.1" fill="#5B4FDB" fill-opacity="0.45"/>
+  <circle cx="15.5" cy="47.5" r="1.1" fill="#5B4FDB" fill-opacity="0.45"/>
+  <circle cx="19" cy="47.5" r="1.1" fill="#5B4FDB" fill-opacity="0.45"/>
+</svg>
