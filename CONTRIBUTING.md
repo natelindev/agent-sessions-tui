@@ -35,6 +35,7 @@ To publish, authenticate Wrangler to the account owning the project with Pages w
 
 ```sh
 npx --yes wrangler@4.148.0 login
+export CLOUDFLARE_ACCOUNT_ID=03ceea7ffa07af3f2b87471413fe6b18
 npx --yes wrangler@4.148.0 pages deploy docs --project-name natelindev-agent-sessions-tui --branch main
 ```
 
