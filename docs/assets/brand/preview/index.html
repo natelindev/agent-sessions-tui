@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Sessions — Logo Redesign Options</title>
+  <style>
+    :root {
+      --bg: #0b0d13;
+      --card-bg: #141722;
+      --border: #262a3b;
+      --text: #f0f3fa;
+      --muted: #8e96ac;
+      --accent: #5b4fdb;
+      --accent-light: #a79cff;
+      --tag-bg: rgba(91, 79, 219, 0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 40px 24px;
+      line-height: 1.5;
+    }
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .card.recommended {
+      border: 2px solid var(--accent);
+      position: relative;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .img-wrap {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #07090e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+    .content {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--accent-light);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .description {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+    .meta-list {
+      list-style: none;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .meta-list li {
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .meta-list li::before {
+      content: "•";
+      color: var(--accent-light);
+      font-weight: bold;
+    }
+    .section-title {
+      max-width: 1200px;
+      margin: 60px auto 20px auto;
+      font-size: 22px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+    .boards {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .boards { grid-template-columns: 1fr; }
+    }
+    .board-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 16px;
+    }
+    .board-card h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+    .board-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>Agent Sessions — Logo Redesign Options</h1>
+    <p>Compare the 3 visual directions below to choose the new brand mark.</p>
+  </header>
+
+  <main class="grid">
+    <!-- OPTION 1 -->
+    <article class="card recommended">
+      <div class="img-wrap">
+        <img src="option-1-session-s.jpg" alt="Option 1: The Fast-Forward Session S">
+      </div>
+      <div class="content">
+        <span class="badge">Recommended</span>
+        <h2 class="title">Option 1: Fast-Forward Session S</h2>
+        <div class="subtitle">Geometric 'S' + Terminal Prompt '&gt;'</div>
+        <p class="description">
+          A continuous, aerodynamic ribbon S whose center naturally forms a luminous forward command prompt chevron (&gt;). Merges the Sessions 'S', the CLI prompt, and the active resume motion.
+        </p>
+        <ul class="meta-list">
+          <li>180° rotational symmetry</li>
+          <li>Scales cleanly from 16px favicon to 512px icon</li>
+          <li>Modern, aerodynamic, high-craft developer tool aesthetic</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- OPTION 2 -->
+    <article class="card">
+      <div class="img-wrap">
+        <img src="option-2-terminal-windows.jpg" alt="Option 2: Terminal Session Windows">
+      </div>
+      <div class="content">
+        <h2 class="title">Option 2: Terminal Session Windows</h2>
+        <div class="subtitle">Stacked Session Cards + Resumed Prompt</div>
+        <p class="description">
+          Three stacked horizontal terminal windows representing agent history records, with the active center session illuminated with a glowing violet frame and a crisp &gt;_ prompt.
+        </p>
+        <ul class="meta-list">
+          <li>Direct representation of the TUI terminal interface</li>
+          <li>Instantly signals session browsing &amp; activation</li>
+          <li>Architectural, developer-centric layout</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- OPTION 3 -->
+    <article class="card">
+      <div class="img-wrap">
+        <img src="option-3-interlocking-chevrons.jpg" alt="Option 3: Interlocking A+S Chevrons">
+      </div>
+      <div class="content">
+        <h2 class="title">Option 3: Interlocking A+S Chevrons</h2>
+        <div class="subtitle">Monogram A+S + Dual Chevrons (&gt;&gt;)</div>
+        <p class="description">
+          A sharp, high-tech monogram uniting "A" (Agent) and "S" (Sessions) through dual fast-forward terminal chevrons (&gt;&gt;) with an electric violet-to-cyan gradient.
+        </p>
+        <ul class="meta-list">
+          <li>Futuristic monogram combining both letters</li>
+          <li>High-energy neon gradient palette</li>
+          <li>Bold CLI power tool emblem</li>
+        </ul>
+      </div>
+    </article>
+  </main>
+
+  <h2 class="section-title">Production Vector Lineup Comparison</h2>
+  <div class="boards">
+    <div class="board-card">
+      <h3>Light UI / Readme Context</h3>
+      <img src="vector-lineup-light.png" alt="Vector comparison board light mode">
+    </div>
+    <div class="board-card">
+      <h3>Dark UI / Terminal Context</h3>
+      <img src="vector-lineup-dark.png" alt="Vector comparison board dark mode">
+    </div>
+  </div>
+
+</body>
+</html>
